@@ -1,0 +1,135 @@
+Comandos Linux Essenciais para DevOps
+──────────────────────────────────────
+
+1. Navegação em Diretórios e Arquivos
+
+ls                  → lista arquivos e pastas do diretório atual
+ls -l               → formato longo (permissões, dono, tamanho, data)
+ls -la / ls -al     → formato longo + mostra arquivos ocultos (.*)
+ls -lh              → tamanhos em formato legível (K,M,G)
+ls -l --sort=size   → ordena por tamanho (maior → menor)
+
+cd ..               → sobe um nível
+cd ../..            → sobe dois níveis
+cd ~                → vai para o diretório home (~ = $HOME)
+cd -                → volta para o diretório anterior
+pwd                 → mostra caminho absoluto do diretório atual
+
+2. Criação e Manipulação de Arquivos/Diretórios
+
+mkdir projetos      → cria diretório
+mkdir -p caminho/completo/aninhado → cria estrutura completa (não dá erro se já existir)
+
+cp arquivo.txt backup/           → copia arquivo
+cp -r pasta/ destino/            → copia diretório recursivamente
+cp -a pasta/ destino/            → copia preservando permissões, dono, datas (recomendado)
+
+mv antigo.txt novo.txt           → renomeia
+mv arquivo.txt /outro/local/     → move
+mv pasta/ nova_pasta/            → renomeia pasta ou move
+
+rm arquivo.txt                   → remove arquivo
+rm -r pasta/                     → remove diretório (com conteúdo)
+rm -rf pasta/                    → remove recursivo e forçado (CUIDADO EXTREMO!)
+
+3. Visualização de Conteúdo
+
+cat arquivo.txt                  → mostra conteúdo completo
+cat -n arquivo.txt               → mostra com numeração de linhas
+less arquivo.log                 → visualizador paginado (↑↓ /busca q=sair)
+head -n 15 arquivo.txt           → mostra primeiras 15 linhas
+tail -n 30 arquivo.log           → últimas 30 linhas
+tail -f /var/log/nginx/access.log → segue o arquivo em tempo real (muito usado!)
+
+4. Busca e Filtros (pipeline friendly)
+
+grep "erro" app.log                  → busca palavra
+grep -i "error" *.log                → ignora maiúsculas/minúsculas
+grep -r "senha" /etc/                → busca recursiva em diretórios
+grep -v "DEBUG" app.log              → mostra tudo EXCETO linhas com DEBUG
+ps aux | grep -i nginx               → procura processo
+
+echo "texto" > arquivo.txt           → cria/sobrescreve arquivo
+echo "mais linha" >> arquivo.txt     → adiciona ao final (append)
+
+wc -l arquivo.log                    → conta linhas
+cat acesso.log | wc -l               → mesmo que acima
+
+cut -d":" -f1 /etc/passwd            → mostra apenas primeira coluna (: como delimitador)
+awk '{print $1, $9}' acesso.log      → colunas 1 e 9 do log de acesso
+
+5. Processos
+
+ps aux                  → lista todos os processos (formato BSD)
+ps aux | grep python    → procura processos python
+
+top                     → monitor interativo (padrão)
+htop                    → versão melhorada e colorida (recomendado instalar)
+
+kill 1234               → sinal TERM (pede gentilmente para terminar)
+kill -9 1234            → SIGKILL (mata na hora, sem cleanup)
+
+pkill -f "nome_processo"      → mata por nome/padrão
+killall nginx                 → mata todos os processos com esse nome
+
+6. Gerenciamento de Serviços (systemd)
+
+systemctl status nginx
+systemctl start nginx
+systemctl restart nginx
+systemctl stop nginx
+systemctl enable nginx          → inicia no boot
+systemctl disable nginx
+systemctl reload nginx          → recarrega configuração (quando suportado)
+
+journalctl -u nginx             → logs do serviço nginx
+journalctl -u nginx -n 100      → últimas 100 linhas
+journalctl -u nginx -f          → segue logs em tempo real
+journalctl -xe                  → últimos erros do sistema
+
+7. Permissões e Proprietários
+
+chmod 755 script.sh          → dono: rwx | grupo: rx | outros: rx
+chmod 644 arquivo.txt        → dono: rw  | grupo: r  | outros: r
+chmod +x programa            → torna executável (equivalente a 755 se era 644)
+chmod -R 755 public_html/    → aplica recursivamente
+
+chown usuario arquivo.txt
+chown usuario:desenvolvedores arquivo.txt
+chown -R www-data:www-data /var/www/html
+
+8. Rede (básico)
+
+ip a                        → mostra interfaces de rede (substitui ifconfig)
+ip a show eth0
+
+ping 8.8.8.8
+ping -c 4 google.com        → 4 pacotes apenas
+
+curl https://api.exemplo.com
+curl -I https://site.com    → só headers
+curl -s -o arquivo.zip https://download...   → silencioso + salva arquivo
+
+ss -tuln                    → portas TCP/UDP escutando (substitui netstat -tuln)
+
+9. Disco / Memória / Sistema
+
+df -h                       → uso de disco (legível)
+df -h /var /home
+
+free -h                     → uso de memória RAM + swap
+
+du -sh pasta/               → tamanho total da pasta
+du -sh ./* | sort -hr       → tamanho de tudo dentro do diretório atual (ordenado)
+
+Recomendação prática para DevOps:
+────────────────────────────────────
+Mantenha sempre o hábito de usar:
+- ls -la
+- df -h
+- free -h
+- journalctl -xe
+- tail -f + grep
+- ps aux | grep
+
+Boa sorte nas entrevistas e na jornada DevOps! 🚀
