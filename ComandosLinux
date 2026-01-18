@@ -1,135 +1,209 @@
-Comandos Linux Essenciais para DevOps
-──────────────────────────────────────
+# Comandos Linux Essenciais para DevOps
 
-1. Navegação em Diretórios e Arquivos
+Guia prático e organizado dos comandos mais usados no dia a dia de DevOps, SRE e SysAdmin.
 
-ls                  → lista arquivos e pastas do diretório atual
-ls -l               → formato longo (permissões, dono, tamanho, data)
-ls -la / ls -al     → formato longo + mostra arquivos ocultos (.*)
-ls -lh              → tamanhos em formato legível (K,M,G)
-ls -l --sort=size   → ordena por tamanho (maior → menor)
+---
 
-cd ..               → sobe um nível
-cd ../..            → sobe dois níveis
-cd ~                → vai para o diretório home (~ = $HOME)
-cd -                → volta para o diretório anterior
-pwd                 → mostra caminho absoluto do diretório atual
+## 1️⃣ Navegação em Diretórios e Arquivos
 
-2. Criação e Manipulação de Arquivos/Diretórios
+```bash
+ls                  # lista arquivos e pastas do diretório atual
+ls -l               # formato longo (permissões, dono, tamanho, data)
+ls -la / ls -al     # formato longo + arquivos ocultos (.*)
+ls -lh              # tamanhos em formato legível (K, M, G)
+ls -l --sort=size   # ordena por tamanho (maior → menor)
+```
 
-mkdir projetos      → cria diretório
-mkdir -p caminho/completo/aninhado → cria estrutura completa (não dá erro se já existir)
+```bash
+cd ..               # sobe um nível
+cd ../..            # sobe dois níveis
+cd ~                # vai para o diretório home
+cd -                # volta para o diretório anterior
+pwd                 # mostra o caminho absoluto do diretório atual
+```
 
-cp arquivo.txt backup/           → copia arquivo
-cp -r pasta/ destino/            → copia diretório recursivamente
-cp -a pasta/ destino/            → copia preservando permissões, dono, datas (recomendado)
+---
 
-mv antigo.txt novo.txt           → renomeia
-mv arquivo.txt /outro/local/     → move
-mv pasta/ nova_pasta/            → renomeia pasta ou move
+## 2️⃣ Criação e Manipulação de Arquivos e Diretórios
 
-rm arquivo.txt                   → remove arquivo
-rm -r pasta/                     → remove diretório (com conteúdo)
-rm -rf pasta/                    → remove recursivo e forçado (CUIDADO EXTREMO!)
+```bash
+mkdir projetos
+mkdir -p caminho/completo/aninhado   # cria estrutura completa
+```
 
-3. Visualização de Conteúdo
+```bash
+cp arquivo.txt backup/
+cp -r pasta/ destino/
+cp -a pasta/ destino/                 # preserva permissões e datas (recomendado)
+```
 
-cat arquivo.txt                  → mostra conteúdo completo
-cat -n arquivo.txt               → mostra com numeração de linhas
-less arquivo.log                 → visualizador paginado (↑↓ /busca q=sair)
-head -n 15 arquivo.txt           → mostra primeiras 15 linhas
-tail -n 30 arquivo.log           → últimas 30 linhas
-tail -f /var/log/nginx/access.log → segue o arquivo em tempo real (muito usado!)
+```bash
+mv antigo.txt novo.txt                # renomeia arquivo
+mv arquivo.txt /outro/local/          # move arquivo
+mv pasta/ nova_pasta/                 # renomeia ou move diretório
+```
 
-4. Busca e Filtros (pipeline friendly)
+```bash
+rm arquivo.txt
+rm -r pasta/
+rm -rf pasta/                         # CUIDADO EXTREMO
+```
 
-grep "erro" app.log                  → busca palavra
-grep -i "error" *.log                → ignora maiúsculas/minúsculas
-grep -r "senha" /etc/                → busca recursiva em diretórios
-grep -v "DEBUG" app.log              → mostra tudo EXCETO linhas com DEBUG
-ps aux | grep -i nginx               → procura processo
+---
 
-echo "texto" > arquivo.txt           → cria/sobrescreve arquivo
-echo "mais linha" >> arquivo.txt     → adiciona ao final (append)
+## 3️⃣ Visualização de Conteúdo
 
-wc -l arquivo.log                    → conta linhas
-cat acesso.log | wc -l               → mesmo que acima
+```bash
+cat arquivo.txt
+cat -n arquivo.txt                    # numera linhas
+less arquivo.log                      # visualização paginada
+```
 
-cut -d":" -f1 /etc/passwd            → mostra apenas primeira coluna (: como delimitador)
-awk '{print $1, $9}' acesso.log      → colunas 1 e 9 do log de acesso
+```bash
+head -n 15 arquivo.txt
+tail -n 30 arquivo.log
+tail -f /var/log/nginx/access.log     # acompanhamento em tempo real
+```
 
-5. Processos
+---
 
-ps aux                  → lista todos os processos (formato BSD)
-ps aux | grep python    → procura processos python
+## 4️⃣ Busca, Filtros e Pipes
 
-top                     → monitor interativo (padrão)
-htop                    → versão melhorada e colorida (recomendado instalar)
+```bash
+grep "erro" app.log
+grep -i "error" *.log
+grep -r "senha" /etc/
+grep -v "DEBUG" app.log
+ps aux | grep -i nginx
+```
 
-kill 1234               → sinal TERM (pede gentilmente para terminar)
-kill -9 1234            → SIGKILL (mata na hora, sem cleanup)
+```bash
+echo "texto" > arquivo.txt           # cria ou sobrescreve
+echo "mais linha" >> arquivo.txt     # append
+```
 
-pkill -f "nome_processo"      → mata por nome/padrão
-killall nginx                 → mata todos os processos com esse nome
+```bash
+wc -l arquivo.log
+cat acesso.log | wc -l
+```
 
-6. Gerenciamento de Serviços (systemd)
+```bash
+cut -d":" -f1 /etc/passwd
+awk '{print $1, $9}' acesso.log
+```
 
+---
+
+## 5️⃣ Processos
+
+```bash
+ps aux
+ps aux | grep python
+```
+
+```bash
+top
+htop                                 # recomendado instalar
+```
+
+```bash
+kill 1234                            # SIGTERM
+kill -9 1234                         # SIGKILL
+pkill -f "nome_processo"
+killall nginx
+```
+
+---
+
+## 6️⃣ Gerenciamento de Serviços (systemd)
+
+```bash
 systemctl status nginx
 systemctl start nginx
 systemctl restart nginx
 systemctl stop nginx
-systemctl enable nginx          → inicia no boot
+systemctl enable nginx
 systemctl disable nginx
-systemctl reload nginx          → recarrega configuração (quando suportado)
+systemctl reload nginx
+```
 
-journalctl -u nginx             → logs do serviço nginx
-journalctl -u nginx -n 100      → últimas 100 linhas
-journalctl -u nginx -f          → segue logs em tempo real
-journalctl -xe                  → últimos erros do sistema
+```bash
+journalctl -u nginx
+journalctl -u nginx -n 100
+journalctl -u nginx -f
+journalctl -xe
+```
 
-7. Permissões e Proprietários
+---
 
-chmod 755 script.sh          → dono: rwx | grupo: rx | outros: rx
-chmod 644 arquivo.txt        → dono: rw  | grupo: r  | outros: r
-chmod +x programa            → torna executável (equivalente a 755 se era 644)
-chmod -R 755 public_html/    → aplica recursivamente
+## 7️⃣ Permissões e Proprietários
 
+```bash
+chmod 755 script.sh
+chmod 644 arquivo.txt
+chmod +x programa
+chmod -R 755 public_html/
+```
+
+```bash
 chown usuario arquivo.txt
 chown usuario:desenvolvedores arquivo.txt
 chown -R www-data:www-data /var/www/html
+```
 
-8. Rede (básico)
+---
 
-ip a                        → mostra interfaces de rede (substitui ifconfig)
+## 8️⃣ Rede (Básico)
+
+```bash
+ip a
 ip a show eth0
+```
 
+```bash
 ping 8.8.8.8
-ping -c 4 google.com        → 4 pacotes apenas
+ping -c 4 google.com
+```
 
+```bash
 curl https://api.exemplo.com
-curl -I https://site.com    → só headers
-curl -s -o arquivo.zip https://download...   → silencioso + salva arquivo
+curl -I https://site.com
+curl -s -o arquivo.zip https://download...
+```
 
-ss -tuln                    → portas TCP/UDP escutando (substitui netstat -tuln)
+```bash
+ss -tuln                            # portas TCP/UDP escutando
+```
 
-9. Disco / Memória / Sistema
+---
 
-df -h                       → uso de disco (legível)
+## 9️⃣ Disco, Memória e Sistema
+
+```bash
+df -h
 df -h /var /home
+```
 
-free -h                     → uso de memória RAM + swap
+```bash
+free -h
+```
 
-du -sh pasta/               → tamanho total da pasta
-du -sh ./* | sort -hr       → tamanho de tudo dentro do diretório atual (ordenado)
+```bash
+du -sh pasta/
+du -sh ./* | sort -hr
+```
 
-Recomendação prática para DevOps:
-────────────────────────────────────
-Mantenha sempre o hábito de usar:
-- ls -la
-- df -h
-- free -h
-- journalctl -xe
-- tail -f + grep
-- ps aux | grep
+---
 
+## 🔥 Recomendações Práticas para DevOps
 
+Use com frequência:
+
+* `ls -la`
+* `df -h`
+* `free -h`
+* `journalctl -xe`
+* `tail -f | grep`
+* `ps aux | grep`
+
+Esses comandos resolvem 80% dos problemas iniciais em produção.
