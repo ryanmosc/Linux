@@ -194,6 +194,36 @@ du -sh ./* | sort -hr
 ```
 
 ---
+# 🔟 Firewall e NAT (iptables)
+
+O `iptables` é a ferramenta de linha de comando utilizada para configurar as tabelas de filtragem de pacotes do kernel Linux. Abaixo, as principais operações divididas por categoria.
+
+---
+
+## 🔍 Visualização de Regras
+Comandos para inspecionar o estado atual das tabelas de firewall.
+
+| Comando | Descrição |
+| :--- | :--- |
+| `iptables -L -n -v` | Lista regras de forma detalhada (v) e numérica (n). |
+| `iptables -t nat -L -n -v` | Lista especificamente as regras da tabela **NAT**. |
+| `iptables -L --line-numbers` | Exibe as regras com numeração (essencial para exclusão). |
+
+---
+
+## 🛡️ Filtragem de Tráfego (INPUT)
+Regras aplicadas aos pacotes que têm como destino a própria máquina.
+
+* **Liberar portas Web:**
+  ```bash
+  iptables -A INPUT -p tcp --dport 80 -j ACCEPT     # Libera porta 80 (HTTP)
+  iptables -A INPUT -p tcp --dport 443 -j ACCEPT    # Libera porta 443 (HTTPS)
+iptables -A INPUT -s 192.168.1.10 -j DROP         # Bloqueia IP específico
+
+iptables -t nat -L | grep dpt:80       # Filtra regras da porta 80
+iptables -t nat -L | grep dpt:443      # Filtra regras da porta 443
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 172.18.0.3:80
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
 ## 🔥 Recomendações Práticas para DevOps
 
